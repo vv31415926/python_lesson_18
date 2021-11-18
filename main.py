@@ -115,7 +115,36 @@ def bd_apartment_view():
 
     return render_template('bd_apartment_view.html', **dic)
 
+@app.route("/sqlalchemy_apartment/")
+def sqlalchemy_apartment():
+    return render_template('sqlalchemy_apartment.html')
 
+@app.route("/sqlalchemy_apartment_view/", methods=['POST'])
+def sqlalchemy_apartment_view():
+    region = request.form['region']  # получение параметра
+    load = request.form.get('load')  # получение параметра
+
+    dic = {}
+    bd = Appartment_BD()
+
+    dic['field'] = []
+    if bd.is_connect == 'OK':
+        lstField = bd.get_title_table()  # список кортежей(записей) с полями внутри
+        dic['field'] = lstField
+
+    # данные БД
+    # перезаписать
+    if load:
+        parser = Parser_price()  # создать объект парсинга по району
+        lst_data = parser.data_search(region)
+        bd.save_data(lst_data)
+
+    lst_view_data, update = bd.get_data(region)
+    dic['data'] = lst_view_data
+    dic['region'] = region
+    dic['update'] = update
+
+    return render_template('sqlalchemy_apartment_view.html', **dic)
 # ********************************************************************
 if __name__ == "__main__":
     #print( 'версия:', flask.__version__ )
