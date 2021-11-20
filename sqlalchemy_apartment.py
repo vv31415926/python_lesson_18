@@ -5,7 +5,7 @@ from sqlalchemy import Column, Integer, String, Float, create_engine,Table, Meta
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import mapper, sessionmaker, create_session
 
-from sqlalchemy_ap_newbd import aaa
+
 
 engine = create_engine( 'sqlite:///apartment.db', echo=False )
 Base = declarative_base()

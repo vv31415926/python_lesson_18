@@ -7,7 +7,7 @@ from sqlalchemy.pool import NullPool
 
 engine = create_engine( 'sqlite:///apartment.db', echo=False , poolclass=NullPool )
 Base = declarative_base()
-metadata = MetaData( bind=engine )
+metadata = MetaData( bind=engine  )
 
 
 class View_apartment( Base ):
