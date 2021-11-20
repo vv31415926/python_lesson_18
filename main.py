@@ -9,8 +9,10 @@ from parser_price import Parser_price
 #import requests
 from head_hunter_vacancies import HeadHunter_vacancies
 from bd_apartment import Appartment_BD
+from sqlalchemy_apart_class import SQLAlchemy_apartment as al
 
 pers = Person()
+#bd = SQLAlchemy_apartment()
 
 app = Flask( __name__ )
 
@@ -119,30 +121,45 @@ def bd_apartment_view():
 def sqlalchemy_apartment():
     return render_template('sqlalchemy_apartment.html')
 
+
+
 @app.route("/sqlalchemy_apartment_view/", methods=['POST'])
 def sqlalchemy_apartment_view():
     region = request.form['region']  # получение параметра
     load = request.form.get('load')  # получение параметра
 
     dic = {}
-    bd = Appartment_BD()
 
-    dic['field'] = []
-    if bd.is_connect == 'OK':
-        lstField = bd.get_title_table()  # список кортежей(записей) с полями внутри
-        dic['field'] = lstField
+    dic['region'] = region
 
-    # данные БД
-    # перезаписать
-    if load:
-        parser = Parser_price()  # создать объект парсинга по району
-        lst_data = parser.data_search(region)
-        bd.save_data(lst_data)
+    #bd = SQLAlchemy_apartment()
 
-    lst_view_data, update = bd.get_data(region)
+    #print(  bd.get_id_region( region ) )
+    lst_view_data, update = al.get_data( region )
     dic['data'] = lst_view_data
     dic['region'] = region
     dic['update'] = update
+
+    dic['field'] = []
+    lstField = al.get_field()
+    lst = []
+    for v in lstField:
+        lst.append( v['title'] )
+    dic['field'] = lst
+    #print( dic )
+
+
+    # # данные БД
+    # # перезаписать
+    # if load:
+    #     parser = Parser_price()  # создать объект парсинга по району
+    #     lst_data = parser.data_search(region)
+    #     bd.save_data(lst_data)
+    #
+    # lst_view_data, update = bd.get_data(region)
+    # dic['data'] = lst_view_data
+    # dic['region'] = region
+    # dic['update'] = update
 
     return render_template('sqlalchemy_apartment_view.html', **dic)
 # ********************************************************************
