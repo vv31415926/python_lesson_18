@@ -2,84 +2,19 @@ from sqlalchemy import Column, Integer, String, Float, create_engine,Table, Meta
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import mapper, sessionmaker, create_session
 
+from database_setup import Base, View_apartment, Country, Region, City, Address, Characteristic
+
 from sqlalchemy.orm import scoped_session
-from sqlalchemy.pool import NullPool
+#from sqlalchemy.pool import NullPool
 
-engine = create_engine( 'sqlite:///apartment.db', echo=False , poolclass=NullPool )
-Base = declarative_base()
-metadata = MetaData( bind=engine  )
-
-
-class View_apartment( Base ):
-    __table__ = Table('View_apartment', metadata, autoload=True)
-
-    def __init__(self, npp, colname, coltitle):
-        md = metadata
-        self.npp = npp
-        self.colname = colname
-        self.coltitle = coltitle
-
-    def __str__(self):
-        return f'{self.coltitle}'
+engine = create_engine('sqlite:///books-collection.db?check_same_thread=False')
+Base.metadata.bind = engine
+#Base = declarative_base()
+#metadata = MetaData( bind=engine  )
 
 
-class Region(Base):
-    __table__ = Table('Region', metadata, autoload=True)
-
-    def __init__(self, name, id_city):
-        self.name = name
-        self.id_country = id_city
-
-    def __str__(self):
-        return f'{self.name}'
-
-
-class City(Base):
-    __table__ = Table('City', metadata, autoload=True)
-
-    def __init__(self, name, id_country):
-        self.name = name
-        self.id_country = id_country
-
-    def __str__(self):
-        return f'{self.name}'
-
-
-class Country(Base):
-    __table__ = Table('Country', metadata, autoload=True)
-
-    def __init__(self, name):
-        self.name = name
-
-    def __str__(self):
-        return f'{self.name}'
-
-
-class Address(Base):
-    __table__ = Table('Address', metadata, autoload=True)
-
-    def __init__(self, id_region, id_city, name):
-        self.id_region = id_region
-        self.id_city = id_city
-        self.name = name
-
-    def __str__(self):
-        return f'{self.name}'
-
-
-class Characteristic(Base):
-    __table__ = Table('Characteristic', metadata, autoload=True)
-
-    def __init__(self, id_address, data):
-        self.id_address = id_address
-        self.data = data
-
-    def __str__(self):
-        return f'{self.data}'
-
-
-Session = sessionmaker( bind=engine )
-session = Session()
+DBSession = sessionmaker( bind=engine )
+session = DBSession()
 
 #session_factory = sessionmaker(bind=engine)
 #Session = scoped_session(session_factory)
